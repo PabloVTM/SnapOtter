@@ -323,10 +323,9 @@ function ModalityTabs({
             className={cn(
               "px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap",
               activeTab === tab.key
-                ? // Fixed dark text on the orange pill (the orange is the same
-                  // in both themes). White on Otter Orange is only ~3:1, below
-                  // WCAG AA for this 14px label; near-black reaches ~5.8:1.
-                  "bg-primary text-[#1a1814] shadow-sm"
+                ? // Ivory on the sage pill (the sage is the same in both
+                  // themes) reaches ~6:1, above WCAG AA for this 14px label.
+                  "bg-primary text-primary-foreground shadow-sm"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >
