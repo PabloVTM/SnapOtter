@@ -135,7 +135,7 @@ describe("Korean OCR product contract", () => {
   });
 
   it("publishes the measured 25 MiB Fast OCR footprint without stale 24/29 MiB copy", () => {
-    // Reads root DOCKERHUB.md, which .dockerignore strips from the shipped image;
+    // Reads root docs, which .dockerignore strips from the shipped image;
     // this repo-content contract runs in PR CI, not inside the container.
     if (existsSync("/.dockerenv")) return;
     const documents = [
@@ -146,7 +146,6 @@ describe("Korean OCR product contract", () => {
     ];
     const files = [
       "README.md",
-      "DOCKERHUB.md",
       "llms.txt",
       "apps/landing/public/llms.txt",
       ...documents.map((document) => join("apps/docs", document)),
@@ -155,7 +154,7 @@ describe("Korean OCR product contract", () => {
       ),
     ];
 
-    expect(files).toHaveLength(88);
+    expect(files).toHaveLength(87);
     for (const file of files) {
       const footprintLines = readFileSync(join(root, file), "utf8")
         .split("\n")

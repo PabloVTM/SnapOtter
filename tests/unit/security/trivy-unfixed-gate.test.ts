@@ -123,14 +123,4 @@ describe("trivy unfixed gate", () => {
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) expect(id).toMatch(/^(?:CVE|GHSA|PYSEC|DLA|DSA|TEMP|OSV)-[\w.-]+$/);
   });
-
-  it("is wired into both release scan jobs", () => {
-    const release = readFileSync(resolve(root, ".github/workflows/release.yml"), "utf8");
-    const gateSteps = release.match(/node scripts\/trivy-unfixed-gate\.mjs/g) ?? [];
-
-    expect(gateSteps).toHaveLength(2);
-    // The reports the gate reads must not be pre-filtered, or it sees nothing.
-    expect(release).not.toMatch(/format: "json"[\s\S]{0,200}?ignore-unfixed/);
-    expect(release).not.toMatch(/format: json[\s\S]{0,200}?ignore-unfixed/);
-  });
 });

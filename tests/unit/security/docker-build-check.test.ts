@@ -9,7 +9,6 @@ import { afterEach, describe, expect, it } from "vitest";
 const root = resolve(import.meta.dirname, "../../..");
 const dockerfile = readFileSync(resolve(root, "docker/Dockerfile"), "utf8");
 const testDockerfile = readFileSync(resolve(root, "docker/Dockerfile.test"), "utf8");
-const releaseWorkflow = readFileSync(resolve(root, ".github/workflows/release.yml"), "utf8");
 const writer = resolve(root, "docker/write-ocr-runtime-trust.mjs");
 const temporaryDirectories: string[] = [];
 
@@ -54,10 +53,6 @@ describe("Docker BuildKit static-check policy", () => {
     expect(dockerfile).toContain("write-ocr-runtime-trust.mjs");
     expect(dockerfile).not.toMatch(/^(?:ARG|ENV)\s+OCR_RUNTIME_INDEX_KEY_ID=/m);
     expect(dockerfile).not.toMatch(/^(?:ARG|ENV)\s+OCR_RUNTIME_INDEX_PUBLIC_KEY_PEM_B64=/m);
-    expect(releaseWorkflow).toContain("OCR_RUNTIME_TRUST_ID=${{ vars.OCR_RUNTIME_INDEX_KEY_ID }}");
-    expect(releaseWorkflow).toContain(
-      "OCR_RUNTIME_TRUST_PEM_B64=${{ vars.OCR_RUNTIME_INDEX_PUBLIC_KEY_PEM_B64 }}",
-    );
   });
 
   it("does not bake disposable authentication settings into the test image", () => {

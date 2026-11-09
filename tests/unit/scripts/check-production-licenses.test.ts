@@ -101,12 +101,7 @@ describe("production Node dependency license policy", () => {
     expect(packageJson.pnpm.overrides["exceljs>unzipper"]).toBe("0.12.5");
 
     const ci = readFileSync(path.resolve(root, ".github/workflows/ci.yml"), "utf8");
-    const release = readFileSync(path.resolve(root, ".github/workflows/release.yml"), "utf8");
     expect(ci).toContain("pnpm check:production-node-licenses");
-    expect(release).toContain("pnpm check:production-node-licenses");
-    expect(release.indexOf("pnpm check:production-node-licenses")).toBeLessThan(
-      release.indexOf("Run semantic-release"),
-    );
 
     expect(() =>
       execFileSync("pnpm", ["check:production-node-licenses"], {

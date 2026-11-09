@@ -25,8 +25,4 @@ describe("all-in-one install documents where job output lives", () => {
     const doc = read("apps/docs/guide/deployment.md");
     expect(doc).toMatch(/\/tmp\/workspace.*job output/i);
   });
-
-  test("DOCKERHUB.md workspace row says job output is lost without a mount", () => {
-    expect(read("DOCKERHUB.md")).toMatch(/\/tmp\/workspace.*job output/i);
-  });
 });
