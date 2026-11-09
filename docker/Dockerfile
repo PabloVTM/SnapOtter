@@ -116,12 +116,10 @@ COPY apps/web/src ./apps/web/src
 COPY apps/web/public ./apps/web/public
 
 # Bake analytics config into the shared package before building the frontend.
-# The published image ships with analytics ON; self-builders can override:
-#   docker compose build --build-arg SNAPOTTER_ANALYTICS=off
-# The real Sentry DSN + PostHog browser config are supplied as build args (public values,
-# sourced from CI secrets in the official build); a build without them stays
-# silent, so building from source never phones home.
-ARG SNAPOTTER_ANALYTICS=on
+# This fork builds with analytics OFF by default (it has no PostHog / Sentry
+# project of its own); pass --build-arg SNAPOTTER_ANALYTICS=on together with the
+# Sentry DSN + PostHog build args below to turn it back on.
+ARG SNAPOTTER_ANALYTICS=off
 ARG SNAPOTTER_POSTHOG_PROJECT_ID=
 ARG SNAPOTTER_SENTRY_DSN=
 ARG SNAPOTTER_SENTRY_DSN_WEB=
@@ -604,12 +602,11 @@ COPY packages/image-engine/package.json packages/image-engine/tsconfig.json ./pa
 COPY packages/media-engine/package.json packages/media-engine/tsconfig.json ./packages/media-engine/
 COPY packages/doc-engine/package.json packages/doc-engine/tsconfig.json ./packages/doc-engine/
 COPY packages/ai/package.json packages/ai/tsconfig.json ./packages/ai/
-# packages/enterprise is required for ALL commercial features (license validation,
-# SAML/SCIM/MFA gates, S3 storage, OTel tracing gate, GDPR/audit/SIEM routes).
-# Without it, apps/api's `@snapotter/enterprise: workspace:*` link dangles and every
-# `import("@snapotter/enterprise")` throws (silently caught) -> enterprise.active=false
-# regardless of license. Manifest copied before install so pnpm wires the workspace link.
-COPY packages/enterprise/package.json packages/enterprise/tsconfig.json ./packages/enterprise/
+# packages/enterprise is deliberately NOT copied: it is under the SnapOtter Commercial
+# License, which forbids redistributing it, and this fork publishes its image. Without
+# it, apps/api's `@snapotter/enterprise: workspace:*` link dangles and every
+# `import("@snapotter/enterprise")` throws (silently caught) -> enterprise.active=false,
+# which is the AGPL community edition: all tools, batch, pipelines and API keys work.
 
 # pnpm patchedDependencies (package.json) needs the patch files present before
 # install, or `pnpm install` aborts with ENOENT on the patch.
@@ -707,7 +704,6 @@ COPY packages/media-engine/src ./packages/media-engine/src
 COPY packages/doc-engine/src ./packages/doc-engine/src
 COPY packages/ai/src ./packages/ai/src
 COPY packages/ai/python ./packages/ai/python
-COPY packages/enterprise/src ./packages/enterprise/src
 
 # Copy built frontend from builder stage
 COPY --from=builder /app/apps/web/dist ./apps/web/dist

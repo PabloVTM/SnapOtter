@@ -75,7 +75,7 @@ describe("dev-server ports in the build-from-source docs", () => {
     },
   );
 
-  it.each([...docs("apps/docs/**/guide/contributing.md"), "CONTRIBUTING.md"])(
+  it.each(docs("apps/docs/**/guide/contributing.md"))(
     "%s comments the `pnpm dev` block with the dev ports",
     (file) => {
       const text = readFileSync(path.join(ROOT, file), "utf8");

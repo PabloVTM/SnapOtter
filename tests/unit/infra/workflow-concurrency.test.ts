@@ -17,7 +17,7 @@ function readWorkflow(filename: string): Workflow {
 }
 
 describe("workflow concurrency groups (#2457)", () => {
-  it.each(["nightly.yml", "dependency-review.yml", "mutation.yml"])(
+  it.each(["dependency-review.yml"])(
     "%s cancels superseded runs for the same workflow and ref",
     (filename) => {
       const wf = readWorkflow(filename);
@@ -45,9 +45,4 @@ describe("workflow concurrency groups (#2457)", () => {
       });
     },
   );
-
-  it("cla.yml does not cancel in-progress runs that may be pushing to cla-signatures", () => {
-    const wf = readWorkflow("cla.yml");
-    expect(wf.concurrency?.["cancel-in-progress"]).not.toBe(true);
-  });
 });

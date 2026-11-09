@@ -304,48 +304,6 @@ describe("auditWithRetry", () => {
   });
 });
 
-describe("Cloudflare Pages deploy workflows", () => {
-  const guard = "node scripts/check-live-egress.mjs";
-  const deploys = [
-    { file: "deploy-landing.yml", project: "snapotter-landing", url: "https://snapotter.com/" },
-    { file: "deploy-docs.yml", project: "snapotter-docs", url: "https://docs.snapotter.com/" },
-    { file: "deploy-demo.yml", project: "snapotter-demo", url: "https://demo.snapotter.com/" },
-  ];
-
-  for (const { file, project, url } of deploys) {
-    it(`${file} audits ${url} for third-party egress after publishing, unconditionally`, () => {
-      const workflowPath = path.resolve(root, ".github/workflows", file);
-      expect(existsSync(workflowPath)).toBe(true);
-      const workflow = readFileSync(workflowPath, "utf8");
-
-      const deployIndex = workflow.indexOf(`--project-name ${project}`);
-      const guardIndex = workflow.indexOf(`${guard} ${url}`);
-      expect(deployIndex, "wrangler deploy step").toBeGreaterThanOrEqual(0);
-      expect(guardIndex, `${guard} ${url} step`).toBeGreaterThanOrEqual(0);
-      // The edge injects whichever deployment is live; running after wrangler
-      // just keeps the verdict next to the publish it belongs to.
-      expect(guardIndex, "guard runs after the deploy").toBeGreaterThan(deployIndex);
-
-      // "The deploy keeps failing on the beacon, let me unblock it" must not be
-      // a one-line edit that keeps the step and loses the gate.
-      const afterGuard = workflow.slice(guardIndex);
-      expect(afterGuard).not.toMatch(/continue-on-error/);
-      expect(afterGuard).not.toMatch(/^\s+if:/m);
-    });
-
-    it(`${file} allows exactly the origins the public sites chose`, () => {
-      // Cloudflare Web Analytics is accepted on the zone (decided on #793).
-      // PostHog loads at runtime from inline script, so it never appears as
-      // a tag and needs no entry. Anything else added here is a policy change.
-      const workflow = readFileSync(path.resolve(root, ".github/workflows", file), "utf8");
-      const command = workflow.match(/node scripts\/check-live-egress\.mjs[^\n]*/)?.[0] ?? "";
-      const allowed = [...command.matchAll(/--allow (\S+)/g)].map((match) => match[1]);
-
-      expect(allowed).toEqual(["https://static.cloudflareinsights.com"]);
-    });
-  }
-});
-
 describe("check-live-egress CLI", () => {
   let server: Server;
   let base: string;

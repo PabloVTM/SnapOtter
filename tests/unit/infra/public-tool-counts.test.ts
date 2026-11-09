@@ -18,7 +18,7 @@ import { describe, expect, it } from "vitest";
 const ROOT = path.resolve(__dirname, "../../..");
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
 
-const SURFACES = ["README.md", "DOCKERHUB.md"] as const;
+const SURFACES = ["README.md"] as const;
 
 /** README writes "Image (107)", DOCKERHUB writes "Documents / PDF (29)". */
 const SECTION_LABELS: Record<string, RegExp> = {
@@ -85,24 +85,5 @@ describe("public capability claims", () => {
     expect(bullet).toBeDefined();
     expect(bullet?.toLowerCase()).not.toMatch(/unlimited steps/);
     expect(bullet).toContain(`${pipelineStepDefault()} steps`);
-  });
-
-  it("DOCKERHUB pins the tag examples to the released major", () => {
-    const version = JSON.parse(read("package.json")).version as string;
-    const [major, minor] = version.split(".");
-    const text = read("DOCKERHUB.md");
-    for (const tag of [version, `${major}.${minor}`, major]) {
-      expect(text, `missing \`${tag}\` tag row`).toContain(`| \`${tag}\` |`);
-    }
-  });
-
-  it("DOCKERHUB names the released version in its banner", () => {
-    const version = JSON.parse(read("package.json")).version as string;
-    const banner = read("DOCKERHUB.md")
-      .split("\n")
-      .find((l) => l.startsWith("> **SnapOtter"));
-    expect(banner).toBeDefined();
-    expect(banner).toContain(`\`${version}\``);
-    expect(banner).toContain(`/tag/v${version}`);
   });
 });

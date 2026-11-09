@@ -35,11 +35,13 @@ const IMAGE_DEPENDENT_MARKERS: Record<string, string> = {
 };
 
 /** Tagged, digest-pinned, or bare: all of them resolve to a published image. */
-const APP_IMAGE = /(?:ghcr\.io\/snapotter-hq|snapotter)\/snapotter(?![A-Za-z0-9_.-])/;
+// Upstream image names (the docs site) and this fork's GHCR image (the README).
+const APP_IMAGE =
+  /(?:ghcr\.io\/snapotter-hq|ghcr\.io\/pablovtm|snapotter)\/snapotter(?![A-Za-z0-9_.-])/;
 const FENCE = /^[ \t]*```[^\n]*\n([\s\S]*?)^[ \t]*```/gm;
 
 /** Surfaces the scan must have found an example in, or it proved nothing. */
-const SURFACES_WITH_EXAMPLES = ["README.md", "DOCKERHUB.md", "apps/docs/guide/deployment.md"];
+const SURFACES_WITH_EXAMPLES = ["README.md", "apps/docs/guide/deployment.md"];
 
 function parseVersion(version: string): number[] {
   const parts = version.split(".").map(Number);
@@ -96,11 +98,10 @@ function markdownFiles(dir: string): string[] {
   return out;
 }
 
-/** README, the Docker Hub overview, and the docs site in every locale. */
+/** README and the docs site in every locale. */
 function publicSurfaces(): string[] {
   return [
     path.resolve(root, "README.md"),
-    path.resolve(root, "DOCKERHUB.md"),
     ...markdownFiles(path.resolve(root, "apps/docs")),
   ].sort();
 }
@@ -134,6 +135,12 @@ describe("compose example policy", () => {
 
   it("treats the GHCR mirror as the same image", () => {
     const example = composeExample("ghcr.io/snapotter-hq/snapotter:latest");
+
+    expect(unpublishedMarkers(example, "2.2.0")).toHaveLength(2);
+  });
+
+  it("treats this fork's GHCR image as the app image", () => {
+    const example = composeExample("ghcr.io/pablovtm/snapotter:latest");
 
     expect(unpublishedMarkers(example, "2.2.0")).toHaveLength(2);
   });

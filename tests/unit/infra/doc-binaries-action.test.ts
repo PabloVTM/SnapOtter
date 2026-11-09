@@ -82,14 +82,11 @@ function runBash(
 }
 
 describe("doc-binaries composite action (#2763)", () => {
-  it("shares .github/actions/doc-binaries across ci.yml and nightly.yml without inline duplication", () => {
+  it("uses .github/actions/doc-binaries in ci.yml without inline duplication", () => {
     const ci = readYaml<Workflow>(".github/workflows/ci.yml");
-    const nightly = readYaml<Workflow>(".github/workflows/nightly.yml");
 
     for (const [workflowName, jobName, job] of [
       ["ci.yml", "test-integration", ci.jobs["test-integration"]],
-      ["nightly.yml", "extended-matrix", nightly.jobs["extended-matrix"]],
-      ["nightly.yml", "coverage-report", nightly.jobs["coverage-report"]],
     ] as const) {
       const steps = job?.steps ?? [];
       expect(

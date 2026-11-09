@@ -2,40 +2,32 @@
   <img src="branding/social-preview.png" width="800" alt="SnapOtter - A Self-Hosted File Manipulation Suite">
 </p>
 
-<p align="center">
-  <a href="https://hub.docker.com/r/snapotter/snapotter"><img src="https://img.shields.io/docker/v/snapotter/snapotter?label=Docker%20Hub&logo=docker" alt="Docker Hub"></a>
-  <a href="https://github.com/orgs/snapotter-hq/packages/container/package/snapotter"><img src="https://img.shields.io/badge/GHCR-ghcr.io%2Fsnapotter--hq%2Fsnapotter-blue?logo=github" alt="GHCR"></a>
-  <a href="https://github.com/snapotter-hq/snapotter/actions"><img src="https://img.shields.io/github/actions/workflow/status/snapotter-hq/snapotter/ci.yml?label=CI" alt="CI"></a>
-  <a href="https://www.bestpractices.dev/projects/12881"><img src="https://www.bestpractices.dev/projects/12881/badge" alt="OpenSSF Best Practices"></a>
-  <a href="https://github.com/snapotter-hq/snapotter/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-AGPLv3-blue" alt="License"></a>
-  <a href="https://github.com/snapotter-hq/snapotter/stargazers"><img src="https://img.shields.io/github/stars/snapotter-hq/snapotter?style=social" alt="Stars"></a>
-  <a href="https://snapotter.com"><img src="https://img.shields.io/badge/Website-snapotter.com-blue?logo=googlechrome&logoColor=white" alt="Website"></a>
-  <a href="https://demo.snapotter.com"><img src="https://img.shields.io/badge/Live%20Demo-Try%20it-blue?logo=googlechrome&logoColor=white" alt="Live Demo"></a>
-  <a href="https://discord.gg/hr3s7HPUsr"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
-  <a href="https://github.com/sponsors/snapotter-hq"><img src="https://img.shields.io/badge/Sponsor-pink?logo=githubsponsors&logoColor=white" alt="Sponsor"></a>
-</p>
+# SnapOtter (fork)
 
-<p align="center">
-  <strong>Open-source, self-hosted file-processing infrastructure. Convert, compress, OCR, transcribe, strip metadata, and run local AI across image, video, audio, PDF, and documents, through a UI, REST API, and pipelines. Your files never leave your network.</strong>
-  <br /><br />
-  The one self-hosted stack that replaces CloudConvert, Smallpdf, TinyPNG, TinyWow, and Otter.ai. 200+ tools across five modalities, on hardware you own.
-</p>
+Open-source, self-hosted file-processing suite: convert, compress, OCR, transcribe, strip metadata and run local AI across image, video, audio, PDF and documents, through a web UI, a REST API and pipelines. Your files never leave your network.
+
+This is a fork of [snapotter-hq/SnapOtter](https://github.com/snapotter-hq/SnapOtter), maintained at [PabloVTM/SnapOtter](https://github.com/PabloVTM/SnapOtter). The interface uses the PabloSystems theme shared by the PabloVTM tools: Deep Sage Green `#4B5A50`, Warm Ivory `#F1EEE3` and Vibrant Vermillion Red `#F20B0B` for details, system monospace fonts and a `pablo@systems:~/snapotter` prompt, in light and dark modes.
 
 ![SnapOtter - Dashboard](branding/dashboard.gif)
 
-Stirling-PDF stops at PDFs. ConvertX stops at conversions. SnapOtter runs all five, and your files never leave your server. Edit images, convert video, transcribe audio, repair PDFs, batch your files: one Docker stack, on hardware you own.
+## Image
 
-## Quick Start
+Images are published to GitHub Container Registry for `linux/amd64` (with NVIDIA CUDA support) and `linux/arm64`:
 
-One command, that's it.
+| Tag | Content |
+| --- | --- |
+| `ghcr.io/pablovtm/snapotter:latest` | Latest build of `main`. |
+| `ghcr.io/pablovtm/snapotter:YYYY-MM-DD` | Dated version, e.g. `2026-11-09`, published when a git tag of the same name is pushed. Each build upgrades the OS packages, so a new dated version also brings the latest security fixes. |
+
+The image is the **community edition**: everything in this repository except `packages/enterprise`, which is under the SnapOtter Commercial License and may not be redistributed, so it is not built into the image. All tools, batch processing, pipelines and API keys work without it; the enterprise features (SAML/SCIM, S3 storage, audit and SIEM routes, distributed tracing) are not available.
+
+## Quick start
 
 ```bash
-docker run -d --name SnapOtter -p 1349:1349 -v SnapOtter-data:/data snapotter/snapotter:latest
+docker run -d --name snapotter -p 1349:1349 -v snapotter-data:/data ghcr.io/pablovtm/snapotter:latest
 ```
 
-Open [http://localhost:1349](http://localhost:1349) and log in with `admin` / `admin`. That's the whole install.
-
-For the production Compose stack, NVIDIA GPU acceleration, and configuration, see [Deployment](#deployment) below.
+Open http://localhost:1349 and log in with `admin` / `admin`; you are asked to change the password on first login. This single container embeds PostgreSQL 17 and Redis 8. The first start takes a few minutes; the container reports its health on `/api/v1/health`.
 
 ## Key Features
 
@@ -53,16 +45,16 @@ For the production Compose stack, NVIDIA GPU acceleration, and configuration, se
 - **REST API:** Every tool available via API with API key auth. Interactive docs at `/api/docs`
 - **Self-hosted:** one `docker run` for a single-container quick start (embedded Postgres 17 + Redis 8), or the same Postgres 17 + Redis 8 as a Compose stack for production. No external SaaS dependencies
 - **Multi-arch:** Runs on AMD64 and ARM64 (Intel, Apple Silicon, Raspberry Pi)
-- **Privacy first:** Your files never leave your network. Basic analytics help us catch bugs and improve tools. Disable them at build time with `SNAPOTTER_ANALYTICS=off` or at runtime with the in-app admin opt-out ([Here's how to do it](https://docs.snapotter.com/guide/deployment.html#analytics))
+- **Privacy first:** Your files never leave your network. This fork builds its image with analytics off (`SNAPOTTER_ANALYTICS=off`): no PostHog or Sentry calls
 
 ## Deployment
 
-The [Quick Start](#quick-start) one-liner above is all most people need. For production, run the 3-container Compose stack (app + Postgres 17 + Redis 8). Save this as `compose.yaml`:
+For production, run the app with its own PostgreSQL 17 and Redis 8. Save this as `compose.yaml`:
 
 ```yaml
 services:
   snapotter:
-    image: snapotter/snapotter:latest
+    image: ghcr.io/pablovtm/snapotter:latest
     ports: ["1349:1349"]
     environment:
       # Requests are served by a role that can only read and write rows. The
@@ -71,7 +63,7 @@ services:
       DATABASE_MIGRATION_URL: postgres://${POSTGRES_USER:-snapotter}:${POSTGRES_PASSWORD:-snapotter}@postgres:5432/${POSTGRES_DB:-snapotter}
       REDIS_URL: redis://redis:6379
     volumes:
-      - SnapOtter-data:/data
+      - snapotter-data:/data
     depends_on: [postgres, redis]
     restart: unless-stopped
   postgres:
@@ -81,108 +73,61 @@ services:
       # Change this and POSTGRES_APP_PASSWORD for any non-local deployment.
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-snapotter}
       POSTGRES_DB: ${POSTGRES_DB:-snapotter}
-    volumes: ["SnapOtter-pgdata:/var/lib/postgresql/data"]
+    volumes: ["snapotter-pgdata:/var/lib/postgresql/data"]
     restart: unless-stopped
   redis:
     image: redis:8-alpine
-    volumes: ["SnapOtter-redisdata:/data"]
+    volumes: ["snapotter-redisdata:/data"]
     restart: unless-stopped
 volumes:
-  SnapOtter-data:
-  SnapOtter-pgdata:
-  SnapOtter-redisdata:
+  snapotter-data:
+  snapotter-pgdata:
+  snapotter-redisdata:
 ```
-
-Then start the stack:
 
 ```bash
 docker compose up -d
 ```
 
-<details>
-<summary><sub>Have an NVIDIA GPU? Click here for CUDA acceleration.</sub></summary>
-<br>
+NVIDIA GPUs accelerate background removal, upscaling and transcription on the amd64 image; see the upstream [Docker Tags](https://docs.snapotter.com/guide/docker-tags) guide for the GPU Compose settings. Configuration, OIDC / SSO and the REST API are documented in the upstream [documentation](https://docs.snapotter.com).
 
-Use the GPU Compose file for NVIDIA CUDA-accelerated background removal, upscaling, and transcription. OCR deliberately uses the same portable CPU runtime on CPU-only and NVIDIA hosts. Intel/AMD iGPU acceleration through VA-API, Quick Sync, or OpenCL is not supported for AI inference today; those systems run AI tools on CPU. See [Docker Tags](https://docs.snapotter.com/guide/docker-tags) for the GPU Compose example and benchmarks.
+## Releasing
 
-</details>
+Images are built by GitHub Actions on native amd64 and arm64 runners. A push to `main` publishes `latest`; a dated version is published by pushing a tag named after the day:
 
-**Default credentials:**
+```bash
+git tag 2026-11-09
+git push origin 2026-11-09
+```
 
-| Field    | Value   |
-|----------|---------|
-| Username | `admin` |
-| Password | `admin` |
+The workflow smoke tests the image first (health, web UI, analytics off, no enterprise code), then publishes `ghcr.io/pablovtm/snapotter:2026-11-09` and `latest`. There is no scheduled rebuild: tag a new version when you want one.
 
-You will be asked to change your password on first login.
+## Building
 
-For Docker Compose, persistent storage, and other setup options, see the [Getting Started Guide](https://docs.snapotter.com/guide/getting-started). For NVIDIA CUDA acceleration and tag details, see [Docker Tags](https://docs.snapotter.com/guide/docker-tags).
+```bash
+docker build -f docker/Dockerfile -t snapotter:local .
+```
 
-## Documentation
+The build compiles several native tools and needs a lot of disk space (the amd64 image sits on a CUDA base).
 
-- [Getting Started](https://docs.snapotter.com/guide/getting-started)
-- [Upgrading from 1.x to 2.0](https://docs.snapotter.com/guide/upgrading)
-- [Configuration](https://docs.snapotter.com/guide/configuration)
-- [OIDC / SSO](https://docs.snapotter.com/guide/oidc)
-- [Deployment](https://docs.snapotter.com/guide/deployment)
-- [Supported Formats](https://docs.snapotter.com/guide/supported-formats)
-- [Docker Tags](https://docs.snapotter.com/guide/docker-tags)
-- [REST API](https://docs.snapotter.com/api/rest)
-- [AI Engine](https://docs.snapotter.com/api/ai)
-- [Image Engine](https://docs.snapotter.com/api/image-engine)
-- [Architecture](https://docs.snapotter.com/guide/architecture)
-- [Database](https://docs.snapotter.com/guide/database)
-- [Developer Guide](https://docs.snapotter.com/guide/developer)
-- [Contributing](https://docs.snapotter.com/guide/contributing)
-- [Translation Guide](https://docs.snapotter.com/guide/translations)
+## Development
 
-## Contributing
+Requires Node.js 22 or later and pnpm 9.
 
-We welcome bug reports, feature ideas, and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, or jump in:
+```bash
+pnpm install
+pnpm dev          # API and web app with hot reload
+pnpm lint
+pnpm typecheck
+pnpm test:unit
+```
 
-- [Open an issue](https://github.com/snapotter-hq/snapotter/issues)
-- [Submit a PR](CONTRIBUTING.md#code-requires-cla)
-- [Join Discord](https://discord.gg/hr3s7HPUsr) for help and discussion
-- [Sponsor the project](https://github.com/sponsors/snapotter-hq) to keep SnapOtter free for everyone
+See the upstream [developer guide](https://docs.snapotter.com/guide/developer) for details.
 
-## Support SnapOtter
+## Credits
 
-SnapOtter is built and maintained independently with no venture capital or corporate backing. Sponsorships fund infrastructure, keep releases flowing, and ensure the project stays free and open for everyone.
-
-If SnapOtter has replaced a paid subscription or two in your workflow, a small sponsorship helps keep it that way:
-
-<a href="https://github.com/sponsors/snapotter-hq">
-  <img src="branding/sponsor-banner.svg" width="100%" alt="Sponsor SnapOtter on GitHub">
-</a>
-
-<!-- sponsors -->
-<p align="center">
-  SnapOtter is free and open source, made possible by the people below.
-</p>
-
-<p align="center">
-  <a href="https://github.com/kkwpsi"><img src="https://github.com/kkwpsi.png?size=72" width="72" height="72" alt="Karol"></a>
-  <a href="https://github.com/highb"><img src="https://github.com/highb.png?size=72" width="72" height="72" alt="Brandon High"></a>
-  <a href="https://github.com/CSP-Tom"><img src="https://github.com/CSP-Tom.png?size=72" width="72" height="72" alt="Tom"></a>
-  <a href="https://github.com/dominic427"><img src="https://github.com/dominic427.png?size=72" width="72" height="72" alt="Dominic Lopez"></a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/kkwpsi">@kkwpsi</a> &nbsp;&middot;&nbsp; <a href="https://github.com/highb">@highb</a> &nbsp;&middot;&nbsp; <a href="https://github.com/CSP-Tom">@CSP-Tom</a> &nbsp;&middot;&nbsp; <a href="https://github.com/dominic427">@dominic427</a>
-</p>
-<!-- sponsors -->
-
-<p align="center">
-  <a href="https://github.com/snapotter-hq/SnapOtter/stargazers">
-    <img src="https://raw.githubusercontent.com/snapotter-hq/SnapOtter/star-history/star-history.svg" width="760" alt="SnapOtter star history chart">
-  </a>
-</p>
+SnapOtter is created by [snapotter-hq](https://github.com/snapotter-hq) and its contributors; consider [sponsoring them](https://github.com/sponsors/snapotter-hq). This fork is maintained by [PabloVTM](https://github.com/PabloVTM).
 
 ## License
 
-This project is dual-licensed under the [AGPLv3](LICENSE) and a commercial license.
-
-- **AGPLv3 (free):** You may use, modify, and distribute this software under the AGPLv3. If you run a modified version as a network service, you must make your source code available under the AGPLv3.
-- **Commercial license (paid):** For use in proprietary software or SaaS products where AGPLv3 source-disclosure is not suitable, a commercial license is available. [Contact us](mailto:contact@snapotter.com) for pricing and terms.
-
-See [LICENSING.md](LICENSING.md) for full details on the open-core boundary between AGPLv3 and commercial code.
+[AGPLv3](LICENSE), except `packages/enterprise`, which is under the SnapOtter Commercial License (see [LICENSING.md](LICENSING.md)). Under the AGPLv3, the source of this modified version is available at [PabloVTM/SnapOtter](https://github.com/PabloVTM/SnapOtter).

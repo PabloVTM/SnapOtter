@@ -25,7 +25,7 @@ describe("merge queue support", () => {
   // These workflows post the required checks on main. The merge queue waits
   // for every required check on its merge_group run, so a workflow that
   // doesn't listen for merge_group leaves queued PRs stuck as "expected".
-  it.each(["ci.yml", "codeql.yml", "cla.yml", "dependency-review.yml"])(
+  it.each(["ci.yml", "codeql.yml", "dependency-review.yml"])(
     "%s runs on merge_group",
     (filename) => {
       expect(Object.keys(readWorkflow(filename).on)).toContain("merge_group");
@@ -39,15 +39,6 @@ describe("merge queue support", () => {
     const text = JSON.stringify(filter);
     expect(text).toContain("github.event.merge_group.base_sha");
     expect(text).toContain('[ \\"$EVENT_NAME\\" = \\"merge_group\\" ]');
-  });
-
-  it("cla.yml reports on merge_group without running the CLA action", () => {
-    const job = readWorkflow("cla.yml").jobs.cla;
-    expect(job?.if).toContain("github.event_name == 'merge_group'");
-    const action = job?.steps?.find((s) =>
-      s.uses?.startsWith("contributor-assistant/github-action"),
-    );
-    expect(action?.if).toBe("github.event_name != 'merge_group'");
   });
 
   it("dependency-review.yml passes merge group refs and skips the PR comment there", () => {

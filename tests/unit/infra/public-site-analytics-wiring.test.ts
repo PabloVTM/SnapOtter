@@ -41,14 +41,6 @@ describe("landing site", () => {
     expect(component).toContain("set:html");
   });
 
-  it("gets the key and the proxy host on the build step of the deploy workflow", () => {
-    const workflow = read(".github/workflows/deploy-landing.yml");
-    const build = step(workflow, "Build Landing Page", "Guard against lowercased locale URLs");
-
-    expect(build).toContain("PUBLIC_POSTHOG_KEY: $" + "{{ secrets.SNAPOTTER_POSTHOG_KEY }}");
-    expect(build).toContain("PUBLIC_POSTHOG_HOST: https://e.snapotter.com");
-  });
-
   it("discloses PostHog and its cookie on the privacy page", () => {
     // publicSiteAnalyticsConfig leaves persistence on the SDK default, which
     // sets a first-party cookie. The policy text has to say so, in every locale.
@@ -70,35 +62,4 @@ describe("docs site", () => {
     expect(config).toMatch(/head:\s*\[\s*\.\.\.analyticsHead,/);
     expect(config).toContain('["script", {}, analyticsScript]');
   });
-
-  it("gets the key and the proxy host on the build step of the deploy workflow", () => {
-    const workflow = read(".github/workflows/deploy-docs.yml");
-    const build = step(workflow, "Build Docs", "Deploy to Cloudflare Pages");
-
-    expect(build).toContain("PUBLIC_POSTHOG_KEY: $" + "{{ secrets.SNAPOTTER_POSTHOG_KEY }}");
-    expect(build).toContain("PUBLIC_POSTHOG_HOST: https://e.snapotter.com");
-  });
-});
-
-describe("both deploys", () => {
-  for (const file of ["deploy-landing.yml", "deploy-docs.yml"]) {
-    it(`${file} redeploys when the shared capture posture changes`, () => {
-      // Without this a change to what the sites capture waits for the daily
-      // cron, and nobody sees it go live.
-      const workflow = read(`.github/workflows/${file}`);
-      expect(workflow).toContain('"packages/shared/src/analytics/public-site.ts"');
-    });
-
-    it(`${file} checks the shipped page for the snippet after the egress guard`, () => {
-      // The key going missing from the build env is the failure that already
-      // happened once; a green deploy with dark analytics must not repeat it.
-      const workflow = read(`.github/workflows/${file}`);
-      const guard = workflow.indexOf("name: Verify the live site loads nothing third-party");
-      const smoke = workflow.indexOf("name: Verify the live site carries the PostHog snippet");
-      expect(guard).toBeGreaterThanOrEqual(0);
-      expect(smoke).toBeGreaterThan(guard);
-      expect(workflow.slice(smoke)).toContain('posthog.init("phc_');
-      expect(workflow.slice(smoke)).not.toMatch(/continue-on-error/);
-    });
-  }
 });

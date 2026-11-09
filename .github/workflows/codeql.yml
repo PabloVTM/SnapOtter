@@ -6,8 +6,6 @@ on:
   pull_request:
     branches: [main]
   merge_group:
-  schedule:
-    - cron: "30 6 * * 6"
 
 # Same shape as ci.yml: PRs cancel superseded runs, every main commit gets
 # its own run so a burst of merges can't cancel or replace one.
