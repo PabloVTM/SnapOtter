@@ -21,6 +21,7 @@ import { withAnalytics } from "@/lib/lazy-analytics";
 import { cn } from "@/lib/utils";
 import { ImageEditIcon } from "../common/image-edit-icon";
 import { OtterLogo } from "../common/otter-logo";
+import { TerminalPrompt } from "../common/terminal-prompt";
 import { AvatarDropdown } from "./avatar-dropdown.js";
 
 interface TopNavProps {
@@ -158,9 +159,10 @@ export function TopNav({
         isDark ? "bg-[#222] border-[#333]" : "bg-background border-border",
       )}
     >
-      {/* Left: Logo */}
-      <Link to="/" className="shrink-0 me-4" aria-label={t.a11y.homeLink}>
+      {/* Left: Logo and the PabloSystems prompt */}
+      <Link to="/" className="shrink-0 me-4 flex items-center gap-2" aria-label={t.a11y.homeLink}>
         <OtterLogo className="h-7 w-7" />
+        {!isDark && <TerminalPrompt className="hidden md:inline" />}
       </Link>
 
       {/* Center-left: Breadcrumb or nav links */}

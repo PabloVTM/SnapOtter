@@ -11,11 +11,12 @@ body {
 }
 
 :root {
+  /* PabloSystems theme: system monospace first, Noto fallbacks for every script. */
   font-family:
-    "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", "Noto Sans", "Noto Sans CJK SC", "Noto Sans CJK TC",
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    "DejaVu Sans Mono", "Noto Sans Mono", "Noto Sans CJK SC", "Noto Sans CJK TC",
     "Noto Sans CJK JP", "Noto Sans CJK KR", "Noto Sans Arabic",
-    "Noto Sans Devanagari", "Noto Sans Thai", sans-serif,
+    "Noto Sans Devanagari", "Noto Sans Thai", monospace,
     "Apple Color Emoji", "Segoe UI Emoji";
 }
 
@@ -26,48 +27,55 @@ body {
  * small text. Opacity modifiers on text colors blend below AA; don't add them.
  */
 @theme {
-  --color-primary: #E07832;
-  --color-primary-foreground: #1A1814;
-  --color-primary-light: #F09550;
-  --color-primary-dark: #C06520;
-  --color-primary-subtle: #FFF5ED;
-  --color-primary-ink: #A85518;
-  --color-primary-ink-strong: #8F4712;
-  --color-ring: #A85518;
-  --color-background: #FAFAF7;
-  --color-foreground: #1A1814;
-  --color-muted: #F3EEE6;
-  --color-muted-foreground: #6B6560;
-  --color-border: #DDD6CC;
-  --color-card: #ffffff;
-  --color-card-foreground: #1A1814;
-  --color-sidebar: #F3EEE6;
-  --color-sidebar-foreground: #3D3832;
-  --color-accent: #F09550;
-  --color-accent-foreground: #1A1814;
+  /* PabloSystems theme: Deep Sage Green #4B5A50, Warm Ivory #F1EEE3 and
+     Vibrant Vermillion Red #F20B0B for details. */
+  --color-primary: #4B5A50;
+  --color-primary-foreground: #F1EEE3;
+  --color-primary-light: #56675B;
+  --color-primary-dark: #3E4B43;
+  --color-primary-subtle: #E4E8E2;
+  --color-primary-ink: #4B5A50;
+  --color-primary-ink-strong: #3E4B43;
+  --color-ring: #F20B0B;
+  --color-background: #F1EEE3;
+  --color-foreground: #2B332E;
+  --color-muted: #E7E3D6;
+  --color-muted-foreground: #535E57;
+  --color-border: #D3CDBB;
+  --color-card: #F8F6EF;
+  --color-card-foreground: #2B332E;
+  --color-sidebar: #E7E3D6;
+  --color-sidebar-foreground: #2B332E;
+  /* Vermillion fill that still carries a white label at 4.5:1 */
+  --color-accent: #EC0A0A;
+  --color-accent-foreground: #ffffff;
+  /* Vermillion as text, and the raw brand red for small details */
+  --color-accent-ink: #C40808;
+  --color-detail: #F20B0B;
   --color-destructive: #BE3A35;
   --color-destructive-foreground: #ffffff;
-  --color-destructive-ink: #BE3A35;
+  --color-destructive-ink: #B0302B;
   --color-success: #1E7B5C;
   --color-success-foreground: #ffffff;
-  --color-success-ink: #1E7B5C;
+  --color-success-ink: #1E6E52;
 }
 
 .dark {
-  --color-background: #1A1210;
-  --color-foreground: #F0EBE4;
-  --color-muted: #262018;
-  --color-muted-foreground: #9A908A;
-  --color-border: #382E26;
-  --color-card: #262018;
-  --color-card-foreground: #F0EBE4;
-  --color-sidebar: #262018;
-  --color-sidebar-foreground: #C5BAB0;
-  --color-primary-ink: #F0A766;
-  --color-primary-ink-strong: #F09550;
-  --color-destructive-ink: #D9635E;
-  --color-success-ink: #2D9D78;
-  --color-ring: #F0A766;
+  --color-background: #252C28;
+  --color-foreground: #F1EEE3;
+  --color-muted: #2E3731;
+  --color-muted-foreground: #C9C6B9;
+  --color-border: #4B5A50;
+  --color-card: #2E3731;
+  --color-card-foreground: #F1EEE3;
+  --color-sidebar: #2E3731;
+  --color-sidebar-foreground: #E2DDCE;
+  --color-primary-ink: #A9BAAE;
+  --color-primary-ink-strong: #BCCBC0;
+  --color-accent-ink: #FF7A70;
+  --color-destructive-ink: #FF7A70;
+  --color-success-ink: #8FC79A;
+  --color-ring: #FF7A70;
 }
 
 input[type="range"] {

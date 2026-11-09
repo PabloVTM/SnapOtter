@@ -121,7 +121,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
             </div>
             <div className="flex flex-col gap-1.5">
               <a
-                href="https://github.com/snapotter-hq/snapotter"
+                href="https://github.com/PabloVTM/SnapOtter"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-sm text-primary-ink hover:underline"

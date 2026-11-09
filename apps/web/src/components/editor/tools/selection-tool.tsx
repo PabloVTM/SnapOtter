@@ -936,15 +936,15 @@ export function ActiveSelectionPreview({
   if (type === "lasso" && points.length >= 4) {
     return (
       <Group>
-        <Line points={points} stroke="#E07832" strokeWidth={1} dash={[4, 4]} listening={false} />
+        <Line points={points} stroke="#F20B0B" strokeWidth={1} dash={[4, 4]} listening={false} />
         {closeTarget && (
           <Circle
             x={closeTarget.x}
             y={closeTarget.y}
             radius={POLY_CLOSE_TOLERANCE_PX / zoom}
-            stroke="#E07832"
+            stroke="#F20B0B"
             strokeWidth={1.5 / zoom}
-            fill={closeTarget.active ? "#E07832" : "rgba(255, 255, 255, 0.85)"}
+            fill={closeTarget.active ? "#F20B0B" : "rgba(255, 255, 255, 0.85)"}
             listening={false}
           />
         )}
@@ -967,7 +967,7 @@ export function ActiveSelectionPreview({
         y={y + h / 2}
         radiusX={w / 2}
         radiusY={h / 2}
-        stroke="#E07832"
+        stroke="#F20B0B"
         strokeWidth={1}
         dash={[4, 4]}
         listening={false}
@@ -981,7 +981,7 @@ export function ActiveSelectionPreview({
       y={y}
       width={w}
       height={h}
-      stroke="#E07832"
+      stroke="#F20B0B"
       strokeWidth={1}
       dash={[4, 4]}
       listening={false}

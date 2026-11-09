@@ -4390,7 +4390,7 @@ function AboutSection() {
         <h4 className="text-sm font-medium text-foreground">{t.settings.about.linksHeading}</h4>
         <div className="flex flex-col gap-1.5">
           <a
-            href="https://github.com/snapotter-hq/snapotter"
+            href="https://github.com/PabloVTM/SnapOtter"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-primary-ink hover:underline"

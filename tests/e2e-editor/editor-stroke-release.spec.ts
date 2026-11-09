@@ -85,9 +85,9 @@ function newestLinePointCount(page: Page): Promise<number | null> {
   });
 }
 
-// The orange dashed outline a marquee or lasso draws while it is being dragged
+// The vermillion dashed outline a marquee or lasso draws while it is being dragged
 // (ActiveSelectionPreview). A committed selection is drawn black and white instead.
-const DRAG_PREVIEW_STROKE = "#E07832";
+const DRAG_PREVIEW_STROKE = "#F20B0B";
 
 function dragPreviewCount(page: Page): Promise<number> {
   return page.evaluate((stroke) => {

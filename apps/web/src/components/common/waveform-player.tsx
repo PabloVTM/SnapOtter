@@ -36,7 +36,7 @@ export function WaveformPlayer({ src, className, onDownload }: WaveformPlayerPro
   const isDark =
     typeof document !== "undefined" && document.documentElement.classList.contains("dark");
   const waveColor = isDark ? "#6B6560" : "#DDD6CC";
-  const progressColor = "#E07832";
+  const progressColor = "#4B5A50";
 
   useEffect(() => {
     if (!containerRef.current) return;

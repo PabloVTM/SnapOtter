@@ -596,7 +596,7 @@ export const useEditorStore = create<EditorState & EditorStateExtensions>()(
       editingTextId: null,
 
       // --- Shape settings ---
-      shapeFill: "#E07832" as string | null,
+      shapeFill: "#4B5A50" as string | null,
       shapeFillOpacity: 1,
       shapeStroke: "#000000" as string | null,
       shapeStrokeOpacity: 1,

@@ -97,6 +97,8 @@ jobs:
             echo "packages/enterprise found in the image"
             exit 1
           fi
+          # the PabloSystems theme is in the web bundle
+          docker exec so-test grep -rlq 'pablo@systems' /app/apps/web/dist/assets
 
       - name: Show container logs on failure
         if: failure()

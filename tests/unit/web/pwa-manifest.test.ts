@@ -43,10 +43,10 @@ describe("PWA manifest is installable", () => {
     expect(manifest.scope).toBeTruthy();
     expect(manifest.display).toBe("standalone");
     expect(manifest.description).toBeTruthy();
-    expect(manifest.theme_color).toBe("#E07832");
+    expect(manifest.theme_color).toBe("#4B5A50");
     // Splash background must match the app's light background token
     // (--color-background in globals.css), not stark white.
-    expect(manifest.background_color).toBe("#FAFAF7");
+    expect(manifest.background_color).toBe("#F1EEE3");
   });
 
   it.each(["/", "/snapotter/", "/apps/snapotter/"])(

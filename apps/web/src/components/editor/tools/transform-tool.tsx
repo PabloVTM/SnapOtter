@@ -330,10 +330,10 @@ export function TransformToolTransformer({
         300, 315, 330, 345,
       ]}
       anchorSize={8}
-      anchorStroke="#E07832"
+      anchorStroke="#F20B0B"
       anchorFill="#ffffff"
       anchorCornerRadius={2}
-      borderStroke="#E07832"
+      borderStroke="#F20B0B"
       borderStrokeWidth={1}
       borderDash={[4, 4]}
       padding={0}
